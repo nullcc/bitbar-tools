@@ -14,6 +14,7 @@ LOCATION = "xiamen"  # 所在位置
 API = "https://api.thinkpage.cn/v3/weather/now.json"  # API URL，可替换为其他 URL
 UNIT = "c"  # 单位
 LANGUAGE = "zh-Hans"  # 查询结果的返回语言
+retry = 5
 
 consts_value = dict()
 consts_value["0"] = {"code": "0", "text_en": "Sunny", "text_zh": "晴", "img": "☀️"}
@@ -59,22 +60,28 @@ consts_value["99"] = {"code": "99", "text_en": "Unknown", "text_zh": "未知", "
 
 
 def fetch_weather(location):
-    result = requests.get(API, params={
+    return requests.get(API, params={
         "key": KEY,
         "location": location,
         "language": LANGUAGE,
         "unit": UNIT
     }, timeout=1)
-    return result.text
 
 
 if __name__ == "__main__":
-    result = fetch_weather(LOCATION)
-    result_json = json.loads(result)
-    city = result_json["results"][0].get("location").get("name")
-    desc = result_json["results"][0].get("now").get("text")
-    temperature = result_json["results"][0].get("now").get("temperature")
-    code = result_json["results"][0].get("now").get("code")
-    text = "{}:{}℃,{}{}️".format(city, temperature, desc, consts_value[code].get("img"))
-    print(text)
+    response = fetch_weather(LOCATION)
+    while response.status_code != 200 and retry > 0:
+        response = fetch_weather(LOCATION)
+        retry -= 1
+
+    try:
+        result_json = json.loads(response.text)
+        city = result_json["results"][0].get("location").get("name")
+        desc = result_json["results"][0].get("now").get("text")
+        temperature = result_json["results"][0].get("now").get("temperature")
+        code = result_json["results"][0].get("now").get("code")
+        text = "{}:{}℃,{}{}️".format(city, temperature, desc, consts_value[code].get("img"))
+        print(text)
+    except ValueError:
+        print('天气获取失败')
 
