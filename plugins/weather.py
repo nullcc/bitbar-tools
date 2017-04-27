@@ -10,7 +10,7 @@ sys.setdefaultencoding("utf-8")
 KEY = "vs9zuownkkpqoqxw"  # API key
 UID = "U88C659E34"  # 用户ID
 
-LOCATION = "xiamen"  # 所在位置
+LOCATION = "xiamen"  # 所在位置,可以根据需要修改
 API = "https://api.thinkpage.cn/v3/weather/now.json"  # API URL，可替换为其他 URL
 UNIT = "c"  # 单位
 LANGUAGE = "zh-Hans"  # 查询结果的返回语言

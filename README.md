@@ -7,5 +7,6 @@
 1.在[bitbar下载地址](https://github.com/matryer/bitbar/releases/latest)下载bitbar。
 2.解压bitbar压缩包，选择插件目录，指定为本项目的plugins目录即可。
 
-效果：
+天气插件：
+需要在代码中修改LOCATION，为城市拼音
 ![天气插件](./images/weather.jpg)
