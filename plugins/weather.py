@@ -65,14 +65,18 @@ def fetch_weather(location):
         "location": location,
         "language": LANGUAGE,
         "unit": UNIT
-    }, timeout=1)
+    }, timeout=10)
 
 
 if __name__ == "__main__":
-    response = fetch_weather(LOCATION)
-    while response.status_code != 200 and retry > 0:
+    try:
         response = fetch_weather(LOCATION)
-        retry -= 1
+        if response.status_code != 200:
+            raise StandardError()
+    except:
+        if retry > 0:
+            response = fetch_weather(LOCATION)
+            retry -= 1
 
     try:
         result_json = json.loads(response.text)
@@ -83,5 +87,5 @@ if __name__ == "__main__":
         text = "{}:{}℃,{}{}️".format(city, temperature, desc, consts_value[code].get("img"))
         print(text)
     except ValueError:
-        print('天气获取失败')
+        print('天气解析失败')
 
